@@ -1,15 +1,4 @@
-# Precimonious v0.1
-
-## Overview
-__Precimonious__ employs a _dynamic program analysis_ technique to find a lower
-floating-point precision that can be used in any part of a program.
-Precimonious performs a search on the program variables trying to lower their
-precision subject to accuracy constraints and performance goals. The tool then
-recommends a type instantiation for these variables using less precision while
-producing an accurate enough answer without causing exceptions.
-
-This work was presented at the International Conference for High Performance
-Computing, Networking, Storage and Analysis (SC'13) in November 2013. 
+# ECS289C Precimonious
 
 ## Installation Instruction
 ### Requirement
@@ -27,8 +16,8 @@ LD_LIBRARY_PATH=path/to/llvm/Release/lib
 PATH=$PATH:path/to/llvm/Release/bin
 ```
 
-### Instruction
-After setting up the requirement, you can install Precimonious by
+### Build Instruction
+After setting up the requirement, you can build Precimonious LLVM Passes by
 
 ```
 cd src
@@ -39,39 +28,25 @@ scons -U test // to run the regression test
 
 ## Running the Example
 * Go inside _examples_ folder, take a look at the file funarc.c. This is the target program that we will tune precision on.
-* Compile the program with the following command
-```
-./compile.sh funarc . (remember there is a dot at the end)
-```
-This will create a bitcode file called funarc.bc, together with some other temporary files.
-```
-lli funarc.bc
-```
-This will create a file called spec.cov. This file contains the output and the error threshold in hex format.
-* Open funarc.c, comment out the code at line 100, so that the next time the program runs, it will not create the specification file spec.cov again.
-```
-// cov_arr_spec_log("spec.cov", threshold, INPUTS, log)
-```
-* Compile funarc again
-```
-./compile.sh funarc .
-```
-* Now you can run Precimonious to tune precision of funarc using the following command.
-```
-../scripts/dd2.py funarc.bc search_funarc.json config_funarc.json
-```
-This will create two files: _dd2_diff_funarc.bc.json_ and _dd2_valid_funarc.bc.json_. 
 
-The first file (_dd2_diff_funarc.bc.json_) tells you which variables can be converted to double or float. 
-
-The second file (_dd2_valid_funarc.bc.json_) is the type configuration file in json format. Changing the precision according to the type configuration produces a program that uses less precision and runs faster than the original program.
-
-You may also wonder what are the other files search_funarc.json and config_funarc.json?
-
+* Compile the program:
 ```
-search_funarc.json: specify search space for Precimonious. To generate this automatically, run:
-../scripts/search.sh funarc .
-config_funarc.json: the type configuration of the original program. To generate this automatically, run:
- ../scripts/pconfig.sh funarc .
+./compile.sh
 ```
+This will create a bitcode file called funarc.bc.
+
+* Generate search configuration files:
+```
+./config.sh
+```
+This will create search_funarc.json and config_funarc.json.
+
+* Run Precimonious algorithm:
+```
+./search.sh
+```
+This will create a file called _spec.cov_, which contains the output and the error threshold in hex format.
+Each iteration of the algorithm will create a valid or invalid configuration file, and update files _sat.cov_, _score.cov_, _log.cov_ and _log.dd_.
+Finally, this will create two files: _dd2_diff_funarc.bc.json_ and _dd2_valid_funarc.bc.json_, if a faster and lower-precision type configuration of the program is found. 
+
 
