@@ -1,0 +1,19 @@
+StoreInst
+	Float: 3
+	Double: 10
+	LongDouble: 2
+LoadInst
+	Float: 4
+	Double: 15
+	LongDouble: 3
+ArithOpInst
+	Float: 1
+	Double: 11
+	LongDouble: 0
+CmpOpInst
+	Float: 0
+	Double: 0
+	LongDouble: 0
+CastInst
+	TruncInst: 2
+	ExtInst: 5

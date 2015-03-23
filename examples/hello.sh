@@ -1,0 +1,1 @@
+opt -load $CORVETTE_PATH/src/Passes.so -hello --exclude exclude_hello.txt funarc.bc > /dev/null
